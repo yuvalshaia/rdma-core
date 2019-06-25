@@ -237,6 +237,29 @@ int mlx4_free_pd(struct ibv_pd *pd)
 	return 0;
 }
 
+struct ibv_pd *mlx4_import_pd(struct ibv_context *context, uint32_t fd,
+			      uint32_t handle)
+{
+	struct mlx4_pd *pd;
+	int ret;
+
+	pd = malloc(sizeof(*pd));
+	if (!pd)
+		return NULL;
+
+	ret = ibv_cmd_import_pd(context, &pd->ibv_pd, fd, handle);
+	if (ret) {
+		free(pd);
+		return NULL;
+	}
+
+	/* TODO:
+	pd->pdn =
+	*/
+
+	return &pd->ibv_pd;
+}
+
 struct ibv_xrcd *mlx4_open_xrcd(struct ibv_context *context,
 				struct ibv_xrcd_init_attr *attr)
 {
