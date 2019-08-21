@@ -3,7 +3,7 @@
 .\"
 .TH IBV_REG_MR 3 2006-10-31 libibverbs "Libibverbs Programmer's Manual"
 .SH "NAME"
-ibv_reg_mr, ibv_reg_mr_iova, ibv_dereg_mr \- register or deregister a memory region (MR)
+ibv_reg_mr, ibv_import_mr, ibv_reg_mr_iova, ibv_dereg_mr \- register or deregister a memory region (MR)
 .SH "SYNOPSIS"
 .nf
 .B #include <infiniband/verbs.h>
@@ -14,6 +14,9 @@ ibv_reg_mr, ibv_reg_mr_iova, ibv_dereg_mr \- register or deregister a memory reg
 .BI "struct ibv_mr *ibv_reg_mr_iova(struct ibv_pd " "*pd" ", void " "*addr" ,
 .BI "                               size_t " "length" ", uint64_t " "hca_va" ,
 .BI "                               int " "access" );
+.sp
+.BI "struct ibv_mr *ibv_import_mr(struct ibv_context " "*context" ",
+.BI "                             uint32_t" " fd" ", uint32_t" " handle");
 .sp
 .BI "int ibv_dereg_mr(struct ibv_mr " "*mr" );
 .fi
@@ -63,6 +66,14 @@ a lkey or rkey. The offset in the memory region is computed as 'addr +
 (iova - hca_va)'. Specifying 0 for hca_va has the same effect as
 IBV_ACCESS_ZERO_BASED.
 .PP
+.B ibv_import_mr()
+imports MR identified by
+.I handle\fR
+from context identified by file descriptor
+.I fd\fR
+to device context
+.I context\fR.
+.PP
 .B ibv_dereg_mr()
 deregisters the MR
 .I mr\fR.
@@ -79,9 +90,13 @@ is used by remote processes to perform Atomic and RDMA operations.  The remote p
 .B rkey
 as the rkey field of struct ibv_send_wr passed to the ibv_post_send function.
 .PP
+.B ibv_import_mr()
+returns a pointer to the imported MR, or NULL if the request fails.
+.PP
 .B ibv_dereg_mr()
 returns 0 on success, or the value of errno on failure (which indicates the failure reason).
 .SH "NOTES"
+.PP
 .B ibv_dereg_mr()
 fails if any memory window is still bound to this MR.
 .SH "SEE ALSO"
