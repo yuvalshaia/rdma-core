@@ -62,3 +62,26 @@ int ibv_cmd_dealloc_pd(struct ibv_pd *pd)
 		return ret;
 	return 0;
 }
+
+int ibv_cmd_import_pd(struct ibv_context *context, struct ibv_pd *pd,
+		      uint32_t fd, uint32_t handle)
+{
+	DECLARE_FBCMD_BUFFER(cmdb, UVERBS_OBJECT_PD, UVERBS_METHOD_PD_IMPORT,
+			     3, NULL);
+	struct ib_uverbs_attr *new_handle;
+	int ret;
+
+	fill_attr_in_fd(cmdb, UVERBS_ATTR_IMPORT_PD_FD, fd);
+	fill_attr_in_uint32(cmdb, UVERBS_ATTR_IMPORT_PD_HANDLE, handle);
+	new_handle = fill_attr_out_obj(cmdb, UVERBS_ATTR_IMPORT_PD_NEW_HANDLE);
+
+	ret = execute_ioctl(context, cmdb);
+	if (ret != SUCCESS)
+		return ret;
+
+	pd->context = context;
+	pd->handle = read_attr_obj(UVERBS_ATTR_IMPORT_PD_NEW_HANDLE,
+				   new_handle);
+
+	return 0;
+}

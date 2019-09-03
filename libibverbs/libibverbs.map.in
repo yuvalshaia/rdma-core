@@ -121,6 +121,11 @@ IBVERBS_1.7 {
 		ibv_reg_mr_iova;
 } IBVERBS_1.6;
 
+IBVERBS_1.8 {
+	global:
+		ibv_import_pd;
+} IBVERBS_1.7;
+
 /* If any symbols in this stanza change ABI then the entire staza gets a new symbol
    version. See the top level CMakeLists.txt for this setting. */
 
@@ -164,6 +169,7 @@ IBVERBS_PRIVATE_@IBVERBS_PABI_VERSION@ {
 		ibv_cmd_detach_mcast;
 		ibv_cmd_free_dm;
 		ibv_cmd_get_context;
+		ibv_cmd_import_pd;
 		ibv_cmd_modify_flow_action_esp;
 		ibv_cmd_modify_qp;
 		ibv_cmd_modify_qp_ex;
