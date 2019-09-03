@@ -2083,6 +2083,8 @@ struct verbs_context {
 	struct ibv_qp *(*create_qp_ex)(struct ibv_context *context,
 			struct ibv_qp_init_attr_ex *qp_init_attr_ex);
 	int (*get_srq_num)(struct ibv_srq *srq, uint32_t *srq_num);
+	struct ibv_pd *(*import_pd)(struct ibv_context *context, uint32_t fd,
+				    uint32_t handle);
 	struct ibv_srq *	(*create_srq_ex)(struct ibv_context *context,
 						 struct ibv_srq_init_attr_ex *srq_init_attr_ex);
 	struct ibv_xrcd *	(*open_xrcd)(struct ibv_context *context,
@@ -2282,6 +2284,19 @@ int ibv_get_pkey_index(struct ibv_context *context, uint8_t port_num,
  * ibv_alloc_pd - Allocate a protection domain
  */
 struct ibv_pd *ibv_alloc_pd(struct ibv_context *context);
+
+static inline struct ibv_pd *ibv_import_pd(struct ibv_context *context,
+					   uint32_t fd, uint32_t handle)
+{
+	struct verbs_context *vctx = verbs_get_ctx_op(context, import_pd);
+
+	if (!vctx) {
+		errno = ENOSYS;
+		return NULL;
+	}
+
+	return vctx->import_pd(context, fd, handle);
+}
 
 /**
  * ibv_dealloc_pd - Free a protection domain
