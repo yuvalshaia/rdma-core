@@ -456,12 +456,15 @@ static int pp_share_context(struct pingpong_context *ctx)
 			fprintf(stderr, "Couldn't import PD\n");
 			return -1;
 		}
+		printf("pd=%p\n", ctx->pd);
 
+		/*
 		ctx->mr = ibv_import_mr(ctx->context, *fd, ctx->shm->shared_mr);
 		if (!ctx->pd) {
 			fprintf(stderr, "Couldn't import MR\n");
 			return -1;
 		}
+		*/
 	}
 
 	return 0;
