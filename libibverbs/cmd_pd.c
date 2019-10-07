@@ -31,6 +31,7 @@
  */
 
 #include <infiniband/cmd_write.h>
+#include <stdio.h>
 
 int ibv_cmd_dealloc_pd(struct ibv_pd *pd)
 {
@@ -75,7 +76,12 @@ int ibv_cmd_import_pd(struct ibv_context *context, struct ibv_pd *pd,
 	fill_attr_in_uint32(cmdb, UVERBS_ATTR_IMPORT_PD_HANDLE, handle);
 	new_handle = fill_attr_out_obj(cmdb, UVERBS_ATTR_IMPORT_PD_NEW_HANDLE);
 
+	printf("Press enter to execute import_pd\n");
+	fgetc(stdin);
 	ret = execute_ioctl(context, cmdb);
+	printf("Press enter to continue\n");
+	fgetc(stdin);
+	printf("%s %d, ret=%d\n", __func__, __LINE__, ret);
 	if (ret != SUCCESS)
 		return ret;
 
