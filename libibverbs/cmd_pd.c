@@ -70,6 +70,9 @@ int ibv_cmd_import_pd(struct ibv_context *context, struct ibv_pd *pd,
 			     3, NULL);
 	int ret;
 
+	printf("fd=%d\n", fd);
+	printf("handle=%d\n", handle);
+
 	fill_attr_const_in(cmdb, UVERBS_ATTR_IMPORT_PD_FD_HANDLE, fd);
 	fill_attr_const_in(cmdb, UVERBS_ATTR_IMPORT_PD_PD_HANDLE, handle);
 	fill_attr_out_ptr(cmdb, UVERBS_ATTR_IMPORT_PD_NEW_PD_HANDLE, &pd->handle);
@@ -78,6 +81,7 @@ int ibv_cmd_import_pd(struct ibv_context *context, struct ibv_pd *pd,
 	if (ret)
 		return ret;
 
+	printf("new pd handle=%d\n", pd->handle);
 	pd->context = context;
 
 	return 0;
